@@ -61,8 +61,11 @@
     const scale = 20;  
     const forceScale = 5;
 
-    let posX = 50;
-    let posY = canvas.height - 50;
+    const planeStartX = 50;
+    const planeStartY = canvas.height - 50;
+
+    let posX = planeStartX;
+    let posY = planeStartY;
     let vel = 0;
     let paused = false;
     let time = 0;
@@ -85,7 +88,7 @@
       thetaRad = thetaDeg * Math.PI / 180;
       mu = parseFloat(document.getElementById('mu').value);
       a = g * Math.sin(thetaRad) - mu * g * Math.cos(thetaRad);
-      posX = 50; posY = canvas.height - 50; vel = 0; time = 0;
+      posX = planeStartX; posY = planeStartY; vel = 0; time = 0;
       chart.data.labels = []; chart.data.datasets[0].data = []; chart.data.datasets[1].data = [];
       chart.update(); draw();
     }
@@ -94,16 +97,16 @@
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const endX = posX + planeLength * Math.cos(thetaRad);
-      const endY = posY - planeLength * Math.sin(thetaRad);
-      ctx.beginPath(); ctx.moveTo(posX, posY); ctx.lineTo(endX, endY);
+      const endX = planeStartX + planeLength * Math.cos(thetaRad);
+      const endY = planeStartY - planeLength * Math.sin(thetaRad);
+      ctx.beginPath(); ctx.moveTo(planeStartX, planeStartY); ctx.lineTo(endX, endY);
       ctx.strokeStyle = 'white'; ctx.lineWidth = 5; ctx.stroke();
       ctx.fillStyle = 'red'; ctx.fillRect(posX - blockSize/2, posY - blockSize/2, blockSize, blockSize);
       infoDiv.innerHTML = `Ângulo: ${thetaDeg}° | Aceleração: ${a.toFixed(2)} m/s² | Velocidade: ${vel.toFixed(2)} m/s`;
     }
 
     function update() {
-      if (!paused && posX < 50 + planeLength * Math.cos(thetaRad)) {
+      if (!paused && posX < planeStartX + planeLength * Math.cos(thetaRad)) {
         vel += a * dt; const ds = vel * dt * scale;
         posX += ds * Math.cos(thetaRad); posY -= ds * Math.sin(thetaRad); time += dt;
         chart.data.labels.push(time.toFixed(1));
