@@ -4,18 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Laboratório Virtual - Plano Inclinado</title>
-  <style>
-    body { background-color: #111; color: white; font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; }
-    h1 { color: #00ffcc; }
-    canvas { border: 1px solid white; margin-top: 20px; }
-    #controls { margin-top: 20px; }
-    button { margin: 5px; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { opacity: 0.8; }
-    .btn-primary { background: #00ccff; color: black; }
-    .btn-secondary { background: #ffcc00; color: black; }
-    label { margin-right: 15px; }
-    #chartContainer { width: 95%; max-width: 800px; margin: 30px auto; background: #222; padding: 20px; border-radius: 10px; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>🌍 Laboratório Virtual - Plano Inclinado</h1>
@@ -43,86 +32,6 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const infoDiv = document.getElementById('info');
-
-    let g = 9.81;  
-    let thetaDeg = 30;
-    let thetaRad = thetaDeg * Math.PI / 180;
-    let mu = 0.0;
-    let a = g * Math.sin(thetaRad) - mu * g * Math.cos(thetaRad);
-
-    const planeLength = 500;  
-    const blockSize = 30;
-    const dt = 0.02;  
-    const scale = 20;  
-    const forceScale = 5;
-
-    let posX = 50;
-    let posY = canvas.height - 50;
-    let vel = 0;
-    let paused = false;
-    let time = 0;
-
-    const chartCtx = document.getElementById('chart').getContext('2d');
-    const chart = new Chart(chartCtx, {
-      type: 'line',
-      data: { labels: [], datasets: [
-        { label: 'Velocidade (m/s)', borderColor: 'lime', backgroundColor: 'lime', data: [], fill: false },
-        { label: 'Aceleração (m/s²)', borderColor: 'orange', backgroundColor: 'orange', data: [], fill: false }
-      ]},
-      options: { responsive: true, scales: {
-        x: { title: { display: true, text: 'Tempo (s)', color: 'white' }, ticks: { color: 'white' } },
-        y: { title: { display: true, text: 'Valores', color: 'white' }, ticks: { color: 'white' } }
-      }, plugins: { legend: { labels: { color: 'white' } } } }
-    });
-
-    function resetSimulation() {
-      thetaDeg = parseFloat(document.getElementById('theta').value);
-      thetaRad = thetaDeg * Math.PI / 180;
-      mu = parseFloat(document.getElementById('mu').value);
-      a = g * Math.sin(thetaRad) - mu * g * Math.cos(thetaRad);
-      posX = 50; posY = canvas.height - 50; vel = 0; time = 0;
-      chart.data.labels = []; chart.data.datasets[0].data = []; chart.data.datasets[1].data = [];
-      chart.update(); draw();
-    }
-
-    function togglePause() { paused = !paused; }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const endX = posX + planeLength * Math.cos(thetaRad);
-      const endY = posY - planeLength * Math.sin(thetaRad);
-      ctx.beginPath(); ctx.moveTo(posX, posY); ctx.lineTo(endX, endY);
-      ctx.strokeStyle = 'white'; ctx.lineWidth = 5; ctx.stroke();
-      ctx.fillStyle = 'red'; ctx.fillRect(posX - blockSize/2, posY - blockSize/2, blockSize, blockSize);
-      infoDiv.innerHTML = `Ângulo: ${thetaDeg}° | Aceleração: ${a.toFixed(2)} m/s² | Velocidade: ${vel.toFixed(2)} m/s`;
-    }
-
-    function update() {
-      if (!paused && posX < 50 + planeLength * Math.cos(thetaRad)) {
-        vel += a * dt; const ds = vel * dt * scale;
-        posX += ds * Math.cos(thetaRad); posY -= ds * Math.sin(thetaRad); time += dt;
-        chart.data.labels.push(time.toFixed(1));
-        chart.data.datasets[0].data.push(vel.toFixed(2));
-        chart.data.datasets[1].data.push(a.toFixed(2)); chart.update();
-      }
-      draw();
-    }
-
-    function compartilhar() {
-      const url = window.location.href;
-      if (navigator.share) {
-        navigator.share({ title: 'Experimento Plano Inclinado', text: 'Teste este simulador interativo de física!', url });
-      } else {
-        alert("Copie e compartilhe este link: " + url);
-      }
-    }
-
-    setInterval(update, 20);
-  </script>
+  <script src="script.js" defer></script>
 </body>
 </html>
